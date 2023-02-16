@@ -1,5 +1,5 @@
 #map {
-  height: 350px;
+  height: 390px;
 }
 
 .ant-card {
@@ -47,4 +47,5 @@
 .ant-col {
   transition-property: max-width, flex;
   transition-duration: 0.5s;
+  filter: opacity(0.9) !important;
 }

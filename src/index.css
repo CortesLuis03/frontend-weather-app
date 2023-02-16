@@ -20,5 +20,6 @@ body {
   background-image: url('src/assets/bg.jpg');
   background-size: cover;
   background-position: center top;
+  background-blend-mode: multiply;
   /* min-height: 100vh; */
 }
