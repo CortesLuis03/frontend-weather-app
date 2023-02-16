@@ -1,46 +1,20 @@
-import {
-  useState,
-  useRef,
-  useEffect
-} from "react";
+import React, { useState, useEffect } from "react";
 import "./App.css";
-import { CitySelector } from "./components";
-import { Wrapper } from "@googlemaps/react-wrapper";
-
-const containerStyle = {
-  width: "100%",
-  height: "400px",
-};
-
-const render = (status) => {
-  return <h1>{status}asd</h1>;
-};
-
-function GoogleMap({ center, zoom }) {
-  const ref = useRef();
-  useEffect(() => {
-    const map = new window.google.maps.Map(ref.current, {
-      center,
-      zoom,
-    });
-
-    new google.maps.Marker({
-      position: center,
-      map: map,
-    });
-  });
-
-  return <div ref={ref} id="map" />;
-}
+import { CitySelector, GoogleMaps, SearchHistory, WeatherInfo } from "./components";
+import { Layout, Card, Row, Col, Empty } from "antd";
+const { Content } = Layout;
 
 function App() {
   const [center, setCenter] = useState();
   const [zoom, setZoom] = useState();
+  const [currentInfo, setCurrentInfo] = useState();
 
-  useEffect(() => {
+  
+
+  const geolocationAccess = useEffect(() => {
     const success = (pos) => {
       setCenter({ lat: pos.coords.latitude, lng: pos.coords.longitude });
-      setZoom(12);
+      setZoom(10);
     };
     const error = () => {
       setCenter({ lat: 1, lng: 180 });
@@ -54,21 +28,54 @@ function App() {
     setZoom(zoom);
   };
 
-  const onSelect = (dataWeather) => {
-    console.log(dataWeather.lat);
+  const onSelectCity = (dataWeather) => {
     changePosition(dataWeather.lat, dataWeather.lon, 7);
+    setCurrentInfo(dataWeather)
   };
 
   return (
-    <div className="App">
-      <CitySelector dataWeather={(value) => onSelect(value)}></CitySelector>
-      <Wrapper
-        apiKey={"AIzaSyB-_v-gH9xZ7He4GMKUbUQnkKshr1ujr08"}
-        render={render}
+    <>
+      <Content
+        style={{
+          backgroundImage: "url('src/assets/bg.jpg')",
+          backgroundSize: "cover",
+          backgroundPosition: "center top",
+          boxShadow: " inset 0px 10px 24px -15px rgba(0,0,0,0.22)",
+          padding: 15,
+        }}
       >
-        <GoogleMap center={center} zoom={zoom} />
-      </Wrapper>
-    </div>
+        <Row gutter={[6, 6]}>
+          <Col xs={24} sm={24} md={12}>
+            <Card>
+              <CitySelector
+                dataWeather={(value) => onSelectCity(value)}
+              ></CitySelector>
+            </Card>
+            <Card style={{marginTop: 6}}>
+              <SearchHistory></SearchHistory>
+            </Card>
+          </Col>
+          <Col xs={24} sm={24} md={12}>
+            {currentInfo ? (
+              <WeatherInfo currentInfo={currentInfo}></WeatherInfo>
+            ) : (
+              <Card>
+                <Empty />
+              </Card>
+            )}
+          </Col>
+          <Col xs={24} sm={24}>
+            <Card>
+              {currentInfo ? (
+                <GoogleMaps center={center} zoom={zoom}></GoogleMaps>
+              ) : (
+                <Empty />
+              )}
+            </Card>
+          </Col>
+        </Row>
+      </Content>
+    </>
   );
 }
 

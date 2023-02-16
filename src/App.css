@@ -1,11 +1,58 @@
 #root {
   max-width: 100%;
   margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+  /* padding: 2rem; */
+  /* text-align: center; */
 }
 #map {
-  height: 500px;
+  height: 350px;
+}
+
+.ant-card {
+  border: 1px solid rgb(224 224 224) !important;
+  padding: 0px;
+  border-radius: 5px;
+}
+
+.ant-card-body {
+  padding: 15px !important;
+  transition-duration: 22s !important;
+  transition-property: min-height, max-height, height, display;
+}
+
+.ant-card-grid{
+  width: 50% !important;
+}
+
+.ant-card-grid-header{
+  width: 100% !important;
+  align-items: center !important;
+  display: flex !important;
+  justify-content: center !important;
+}
+.ant-card-grid.ant-card-grid-hoverable {
+  display: flex;
+}
+
+.ant-card-meta-avatar {
+  align-items: center !important;
+  display: flex !important;
+}
+
+.ant-layout-sider {
+  overflow: auto !important;
+  height: 100vh !important;
+  position: fixed !important;
+  right: 0px !important;
+  top: 0px !important;
+  bottom: 0px !important;
+  transition-duration: 0.5s !important;
+  transition-property: min-width, max-width;
+}
+
+.ant-col {
+  transition-property: max-width, flex;
+  transition-duration: 0.5s;
 }
 
 .logo {
