@@ -6,7 +6,7 @@ import {
   SearchHistory,
   WeatherInfo,
 } from "./components";
-import { Layout, Card, Row, Col, Empty } from "antd";
+import { Layout, Card, Row, Col, Empty, Tabs, Divider } from "antd";
 const { Content } = Layout;
 const urlSaveHistory = "http://127.0.0.1:8000/api/weather/history/save";
 
@@ -14,6 +14,23 @@ function App() {
   const [center, setCenter] = useState();
   const [zoom, setZoom] = useState();
   const [currentInfo, setCurrentInfo] = useState();
+
+  const items = [
+    {
+      key: "1",
+      label: `Weather Info`,
+      children: <WeatherInfo currentInfo={currentInfo}></WeatherInfo>,
+    },
+    {
+      key: "2",
+      label: `Search History`,
+      children: (
+        <SearchHistory
+          dataPosition={(data) => onSelectItemHistory(data)}
+        ></SearchHistory>
+      ),
+    },
+  ];
 
   useEffect(() => {
     const success = (pos) => {
@@ -47,7 +64,6 @@ function App() {
         saveHistory(dataPosition.city, data.current.dt);
         setCurrentInfo(data);
       });
-    console.log(dataPosition);
   };
 
   const saveHistory = (city_id, timestamp) => {
@@ -65,13 +81,33 @@ function App() {
       <Content
         style={{
           boxShadow: " inset 0px 10px 24px -15px rgba(0,0,0,0.22)",
-          padding: 15,
-          minHeight: '97vh'
+          padding: 45,
         }}
       >
-        <Row gutter={[6, 6]}>
+        <Row gutter={[45, 45]}>
           <Col xs={24} sm={24} md={12}>
-            <Card>
+            <Card
+              className="card-map card-shadow"
+              style={{
+                minHeight: 750,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              {currentInfo ? (
+                <GoogleMaps
+                  center={center}
+                  zoom={zoom}
+                  dataWeather={currentInfo}
+                ></GoogleMaps>
+              ) : (
+                <Empty style={{}} />
+              )}
+            </Card>
+          </Col>
+          <Col xs={24} sm={24} md={12}>
+            <Card className="card-shadow">
               <CitySelector
                 dataWeather={(value) => onSelectCity(value)}
                 dataHistory={(city_id, timestamp) =>
@@ -79,38 +115,12 @@ function App() {
                 }
               ></CitySelector>
             </Card>
-            <Card
-              title={"Search History"}
-              style={{
-                marginTop: 6,
-                minHeight: 339,
-                maxHeight: 339,
-                overflow: "auto",
-              }}
-            >
-              <SearchHistory
-                dataPosition={(data) => onSelectItemHistory(data)}
-              ></SearchHistory>
+            <Divider style={{ border: "none" }}></Divider>
+            <Card className="info-tabs card-shadow">
+              <Tabs items={items} animated></Tabs>
             </Card>
           </Col>
-          <Col xs={24} sm={24} md={12}>
-            {currentInfo ? (
-              <WeatherInfo currentInfo={currentInfo}></WeatherInfo>
-            ) : (
-              <Card>
-                <Empty />
-              </Card>
-            )}
-          </Col>
-          <Col xs={24} sm={24}>
-            <Card>
-              {currentInfo ? (
-                <GoogleMaps center={center} zoom={zoom}></GoogleMaps>
-              ) : (
-                <Empty />
-              )}
-            </Card>
-          </Col>
+          <Col xs={24} sm={24}></Col>
         </Row>
       </Content>
     </>

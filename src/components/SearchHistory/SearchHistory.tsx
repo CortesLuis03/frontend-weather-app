@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Timeline, Typography } from "antd";
+import { Card, Timeline, Typography } from "antd";
 const { Link } = Typography;
 
 const urlHistory = "http://127.0.0.1:8000/api/weather/history";
@@ -48,8 +48,11 @@ export function SearchHistory({ dataPosition }) {
 
               return {
                 children: (
-                  <Link onClick={() => dataPosition(positiondata)}>
-                    {item.city.name}
+                  <Link
+                    onClick={() => dataPosition(positiondata)}
+                    style={{ maxHeight: 277 }}
+                  >
+                    {item.city.name}, {item.city.country.name}
                   </Link>
                 ),
                 label: dateFormat,
@@ -61,7 +64,17 @@ export function SearchHistory({ dataPosition }) {
   });
   return (
     <>
-      <Timeline items={historyData} mode={"right"} reverse/>
+      <Card
+        className="card-history"
+        bordered={false}
+        style={{
+          minHeight: 530,
+          maxHeight: 530,
+          boxShadow: "none",
+        }}
+      >
+        <Timeline items={historyData} mode={"right"} reverse />
+      </Card>
     </>
   );
 }

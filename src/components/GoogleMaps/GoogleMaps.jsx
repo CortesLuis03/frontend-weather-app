@@ -6,17 +6,38 @@ const render = (status) => {
   return <h1>{status}asd</h1>;
 };
 
-function GoogleMap({ center, zoom, layer }) {
+function GoogleMap({ center, zoom, layer, dataWeather }) {
   const ref = useRef();
+  const { current } = dataWeather
+  const { temp, humidity } = current
+  const colorTemp = (temp >= 28) ? 'red' : ((temp >= 19 && temp < 28) ? 'orange' : 'blue');
+  const contentInfoMarker = `<div>
+  Humidity: <span style="color: blue">${humidity}%</span><br>
+  Temperature: <span style="color: ${colorTemp}">${temp}°</span><br>
+  Thermal Sensation: <span style="color: ${colorTemp}">${temp}°</span>
+  </div>`;
+
   useEffect(() => {
     const map = new window.google.maps.Map(ref.current, {
       center,
       zoom,
     });
 
-    new google.maps.Marker({
+    const marker = new google.maps.Marker({
       position: center,
       map: map,
+    });
+
+    const infoMarker = new window.google.maps.InfoWindow({
+      map: map,
+      content: contentInfoMarker,
+      anchor: marker
+    });
+
+    marker.addListener("click", () => {
+      infoMarker.setAnchor(marker)
+      infoMarker.setContent(contentInfoMarker)
+      map.setCenter(marker.getPosition())
     });
 
     var layerMap = new google.maps.ImageMapType({
@@ -35,7 +56,7 @@ function GoogleMap({ center, zoom, layer }) {
   return <div ref={ref} id="map" />;
 }
 
-export function GoogleMaps({ center, zoom }) {
+export function GoogleMaps({ center, zoom, dataWeather }) {
   const [layer, setLayer] = useState("temp_new");
   const layers = [
     { label: "Temperature", value: "temp_new" },
@@ -49,13 +70,14 @@ export function GoogleMaps({ center, zoom }) {
         apiKey={"AIzaSyB-_v-gH9xZ7He4GMKUbUQnkKshr1ujr08"}
         render={render}
       >
-        <Row style={{ marginBottom: 10 }}>
+        <Row style={{ marginBottom: 0 }}>
           <Col xs={24} sm={0}>
             <Select
               defaultValue={layer}
               size={"small"}
               options={layers}
               onChange={setLayer}
+              style={{margin: 10}}
             />
           </Col>
           <Col xs={0} sm={24}>
@@ -64,10 +86,18 @@ export function GoogleMaps({ center, zoom }) {
               options={layers}
               value={layer}
               onChange={setLayer}
+              style={{margin: 10}}
+            />
+          </Col>
+          <Col span={24}>
+            <GoogleMap
+              center={center}
+              zoom={zoom}
+              layer={layer}
+              dataWeather={dataWeather}
             />
           </Col>
         </Row>
-        <GoogleMap center={center} zoom={zoom} layer={layer} />
       </Wrapper>
     </>
   );

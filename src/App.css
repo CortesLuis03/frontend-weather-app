@@ -1,17 +1,41 @@
 #map {
-  height: 390px;
+  height: 705px;
 }
 
-.ant-card {
-  border: 1px solid rgb(224 224 224) !important;
+.card-shadow {
+  /* border: 1px solid rgb(224 224 224) !important; */
   padding: 0px;
-  border-radius: 5px;
+  border-radius: 2px;
+  box-shadow: 0px 0px 15px 0px rgba(143,143,143,1);
+}
+
+.card-map .ant-card-body{
+  padding: 0px !important;
+  margin: -1px;
+  width: 101%;
+}
+.info-tabs{
+  min-height: 630px;
+}
+
+.card-stadistics {
+  box-shadow: none !important;
+}
+
+.card-stadistics .ant-card-body{
+  padding: 1px !important;
+}
+
+.card-history{
+  box-shadow: none !important;
+  padding: 10px;
 }
 
 .ant-card-body {
   padding: 15px !important;
   transition-duration: 1s !important;
   transition-property: min-height, max-height, height, display;
+  overflow: auto !important;
 }
 
 .ant-card-grid {
@@ -48,4 +72,8 @@
   transition-property: max-width, flex;
   transition-duration: 0.5s;
   filter: opacity(0.9) !important;
+}
+
+ul.ant-timeline{
+  max-height: 470px;
 }
