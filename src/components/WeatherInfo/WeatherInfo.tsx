@@ -121,7 +121,6 @@ export function WeatherInfo({ currentInfo }) {
                   end={currentInfo?.current?.visibility / 1000}
                   duration={1}
                   suffix={" km"}
-                  decimals={2}
                 />
               </Text>
             }

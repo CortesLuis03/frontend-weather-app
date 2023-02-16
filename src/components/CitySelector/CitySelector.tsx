@@ -4,7 +4,7 @@ import { Select, Row, Col } from "antd";
 const urlCountries = "http://127.0.0.1:8000/api/country/list";
 const urlCities = "http://127.0.0.1:8000/api/city/perCountry/";
 
-export const CitySelector = ({ dataWeather }) => {
+export const CitySelector = ({ dataWeather, dataHistory }) => {
   const [countryList, setCountryList] = useState([]);
   const [cityList, setCityList] = useState([]);
   const [city, setCity] = useState<string>("");
@@ -34,14 +34,14 @@ export const CitySelector = ({ dataWeather }) => {
   };
 
   const onChangeCity = (value: string) => {
-    const coordinates = value.split("|");
-    setCity(value);
+    const valueData = value.split("|");
     fetch(
-      `https://api.openweathermap.org/data/3.0/onecall?lat=${coordinates[0]}&lon=${coordinates[1]}&units=metric&exclude=hourly,minutely,daily&appid=76c373757ebc6f563ca89ca92d58bcba`
+      `https://api.openweathermap.org/data/3.0/onecall?lat=${valueData[0]}&lon=${valueData[1]}&units=metric&exclude=hourly,minutely,daily&appid=76c373757ebc6f563ca89ca92d58bcba`
     )
       .then((res) => res.json())
       .then((data) => {
         dataWeather(data);
+        dataHistory(valueData[2], data.current.dt);
       });
   };
 
@@ -51,10 +51,13 @@ export const CitySelector = ({ dataWeather }) => {
       .then((data) => {
         setCityList(
           data.map((item: any) => {
-            return { value: `${item.lat}|${item.lng}`, label: item.name };
+            return {
+              value: `${item.lat}|${item.lng}|${item.id}`,
+              label: item.name,
+            };
           })
         );
-        setCity("");
+        setCity(value);
       });
   };
 
@@ -98,7 +101,6 @@ export const CitySelector = ({ dataWeather }) => {
           style={{ width: "100%" }}
           onChange={onChangeCity}
           options={cityList}
-          value={city}
           filterOption={(input, option: any) =>
             (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
           }
