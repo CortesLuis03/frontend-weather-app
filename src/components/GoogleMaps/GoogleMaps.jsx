@@ -9,12 +9,12 @@ const render = (status) => {
 function GoogleMap({ center, zoom, layer, dataWeather }) {
   const ref = useRef();
   const { current } = dataWeather
-  const { temp, humidity } = current
+  const { temp, humidity, feels_like } = current
   const colorTemp = (temp >= 28) ? 'red' : ((temp >= 19 && temp < 28) ? 'orange' : 'blue');
   const contentInfoMarker = `<div>
   Humidity: <span style="color: blue">${humidity}%</span><br>
   Temperature: <span style="color: ${colorTemp}">${temp}°</span><br>
-  Thermal Sensation: <span style="color: ${colorTemp}">${temp}°</span>
+  Thermal Sensation: <span style="color: ${colorTemp}">${feels_like}°</span>
   </div>`;
 
   useEffect(() => {

@@ -81,11 +81,12 @@ function App() {
       <Content
         style={{
           boxShadow: " inset 0px 10px 24px -15px rgba(0,0,0,0.22)",
-          padding: 45,
+          paddingLeft: 45,
+          paddingRight: 45,
         }}
       >
         <Row gutter={[45, 45]}>
-          <Col xs={24} sm={24} md={12}>
+          <Col xs={{ order:2 , span: 24}} md={{ order: 1 , span: 12}}>
             <Card
               className="card-map card-shadow"
               style={{
@@ -106,7 +107,7 @@ function App() {
               )}
             </Card>
           </Col>
-          <Col xs={24} sm={24} md={12}>
+          <Col xs={{ order:1 , span: 24}} md={{ order: 2 , span: 12}}>
             <Card className="card-shadow">
               <CitySelector
                 dataWeather={(value) => onSelectCity(value)}
