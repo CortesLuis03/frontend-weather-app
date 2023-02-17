@@ -1,26 +1,32 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Wrapper } from "@googlemaps/react-wrapper";
 import { Col, Row, Segmented, Select } from "antd";
-
+import { GOOGLE_KEY } from "../../../config/api";
 const render = (status) => {
-  return <h1>{status}asd</h1>;
+  return <h1>{status}</h1>;
 };
 
-function GoogleMap({ center, zoom, layer, dataWeather }) {
+function GoogleMap({ layer, dataWeather }) {
   const ref = useRef();
-  const { current } = dataWeather
-  const { temp, humidity, feels_like } = current
-  const colorTemp = (temp >= 28) ? 'red' : ((temp >= 19 && temp < 28) ? 'orange' : 'blue');
-  const contentInfoMarker = `<div>
-  Humidity: <span style="color: blue">${humidity}%</span><br>
-  Temperature: <span style="color: ${colorTemp}">${temp}°</span><br>
-  Thermal Sensation: <span style="color: ${colorTemp}">${feels_like}°</span>
+  const {
+    center,
+    zoom,
+    data: { current: weather },
+  } = dataWeather;
+  const { temp, humidity, feels_like } = weather;
+  const colorTemp =
+    temp >= 28 ? "red" : temp >= 19 && temp < 28 ? "orange" : "blue";
+  const contentInfoMarker = ` 
+  <div>
+    Humidity: <span style="color: blue">${humidity}%</span><br>
+    Temperature: <span style="color: ${colorTemp}">${temp}°</span><br>
+    Thermal Sensation: <span style="color: ${colorTemp}">${feels_like}°</span>
   </div>`;
 
   useEffect(() => {
     const map = new window.google.maps.Map(ref.current, {
-      center,
-      zoom,
+      center: center,
+      zoom: zoom,
     });
 
     const marker = new google.maps.Marker({
@@ -31,13 +37,13 @@ function GoogleMap({ center, zoom, layer, dataWeather }) {
     const infoMarker = new window.google.maps.InfoWindow({
       map: map,
       content: contentInfoMarker,
-      anchor: marker
+      anchor: marker,
     });
 
     marker.addListener("click", () => {
-      infoMarker.setAnchor(marker)
-      infoMarker.setContent(contentInfoMarker)
-      map.setCenter(marker.getPosition())
+      infoMarker.setAnchor(marker);
+      infoMarker.setContent(contentInfoMarker);
+      map.setCenter(marker.getPosition());
     });
 
     var layerMap = new google.maps.ImageMapType({
@@ -56,7 +62,7 @@ function GoogleMap({ center, zoom, layer, dataWeather }) {
   return <div ref={ref} id="map" />;
 }
 
-export function GoogleMaps({ center, zoom, dataWeather }) {
+export function GoogleMaps({ dataWeather }) {
   const [layer, setLayer] = useState("temp_new");
   const layers = [
     { label: "Temperature", value: "temp_new" },
@@ -67,7 +73,7 @@ export function GoogleMaps({ center, zoom, dataWeather }) {
   return (
     <>
       <Wrapper
-        apiKey={"AIzaSyB-_v-gH9xZ7He4GMKUbUQnkKshr1ujr08"}
+        apiKey={GOOGLE_KEY}
         render={render}
       >
         <Row style={{ marginBottom: 0 }}>
@@ -77,7 +83,7 @@ export function GoogleMaps({ center, zoom, dataWeather }) {
               size={"small"}
               options={layers}
               onChange={setLayer}
-              style={{margin: 10}}
+              style={{ margin: 10 }}
             />
           </Col>
           <Col xs={0} sm={24}>
@@ -86,16 +92,11 @@ export function GoogleMaps({ center, zoom, dataWeather }) {
               options={layers}
               value={layer}
               onChange={setLayer}
-              style={{margin: 10}}
+              style={{ margin: 10 }}
             />
           </Col>
           <Col span={24}>
-            <GoogleMap
-              center={center}
-              zoom={zoom}
-              layer={layer}
-              dataWeather={dataWeather}
-            />
+            <GoogleMap layer={layer} dataWeather={dataWeather} />
           </Col>
         </Row>
       </Wrapper>

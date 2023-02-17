@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useMemo } from "react";
 import "./App.css";
 import {
   CitySelector,
@@ -7,19 +7,19 @@ import {
   WeatherInfo,
 } from "./components";
 import { Layout, Card, Row, Col, Empty, Tabs, Divider } from "antd";
+import { WEATHER_KEY } from "../config/api";
+import saveHistory from "./services/apiServices";
+
 const { Content } = Layout;
-const urlSaveHistory = "http://127.0.0.1:8000/api/weather/history/save";
 
 function App() {
-  const [center, setCenter] = useState();
-  const [zoom, setZoom] = useState();
-  const [currentInfo, setCurrentInfo] = useState();
+  const [currentWeatherInfo, setCurrentWeatherInfo] = useState();
 
   const items = [
     {
       key: "1",
       label: `Weather Info`,
-      children: <WeatherInfo currentInfo={currentInfo}></WeatherInfo>,
+      children: <WeatherInfo currentInfo={currentWeatherInfo}></WeatherInfo>,
     },
     {
       key: "2",
@@ -32,96 +32,63 @@ function App() {
     },
   ];
 
-  useEffect(() => {
-    const success = (pos) => {
-      setCenter({ lat: pos.coords.latitude, lng: pos.coords.longitude });
-      setZoom(10);
-    };
-    const error = () => {
-      setCenter({ lat: 1, lng: 180 });
-      setZoom(1);
-    };
-    navigator.geolocation.getCurrentPosition(success, error);
-  }, []);
+  const tabsItems = useMemo(() => items, [items]);
 
-  const changePosition = (lat, lng, zoom) => {
-    setCenter({ lat: lat, lng: lng });
-    setZoom(zoom);
+  const changePosition = (lat, lng, zoom, dataWeather) => {
+    setCurrentWeatherInfo({
+      center: {
+        lat: lat,
+        lng: lng,
+      },
+      zoom: zoom,
+      data: dataWeather,
+    });
   };
 
-  const onSelectCity = (dataWeather) => {
-    changePosition(dataWeather.lat, dataWeather.lon, 7);
-    setCurrentInfo(dataWeather);
-  };
-
-  const onSelectItemHistory = (dataPosition) => {
-    changePosition(dataPosition.lat, dataPosition.lng, 7);
+  const onSelectItemHistory = ({ city, lat, lng }) => {
     fetch(
-      `https://api.openweathermap.org/data/3.0/onecall?lat=${dataPosition.lat}&lon=${dataPosition.lng}&units=metric&exclude=hourly,minutely,daily&appid=76c373757ebc6f563ca89ca92d58bcba`
+      `https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${lng}&units=metric&exclude=hourly,minutely,daily&appid=${WEATHER_KEY}`
     )
       .then((res) => res.json())
       .then((data) => {
-        saveHistory(dataPosition.city, data.current.dt);
-        setCurrentInfo(data);
+        setCurrentWeatherInfo({
+          center: {
+            lat: lat,
+            lng: lng,
+          },
+          zoom: 10,
+          data: data,
+        });
+        saveHistory(city, data.current.dt);
       });
-  };
-
-  const saveHistory = (city_id, timestamp) => {
-    const requestOptions = {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ city_id: city_id, timestamp: timestamp }),
-    };
-
-    fetch(urlSaveHistory, requestOptions).then((response) => response.json());
   };
 
   return (
     <>
-      <Content
-        style={{
-          boxShadow: " inset 0px 10px 24px -15px rgba(0,0,0,0.22)",
-          paddingLeft: 45,
-          paddingRight: 45,
-        }}
-      >
+      <Content>
         <Row gutter={[45, 45]}>
-          <Col xs={{ order:2 , span: 24}} md={{ order: 1 , span: 12}}>
-            <Card
-              className="card-map card-shadow"
-              style={{
-                minHeight: 750,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              {currentInfo ? (
-                <GoogleMaps
-                  center={center}
-                  zoom={zoom}
-                  dataWeather={currentInfo}
-                ></GoogleMaps>
+          <Col xs={{ order: 2, span: 24 }} md={{ order: 1, span: 12 }}>
+            <Card className="card-map card-shadow">
+              {currentWeatherInfo ? (
+                <GoogleMaps dataWeather={currentWeatherInfo}></GoogleMaps>
               ) : (
-                <Empty style={{}} />
+                <Empty />
               )}
             </Card>
           </Col>
-          <Col xs={{ order:1 , span: 24}} md={{ order: 2 , span: 12}}>
+          <Col xs={{ order: 1, span: 24 }} md={{ order: 2, span: 12 }}>
             <Card className="card-shadow">
               <CitySelector
-                dataWeather={(value) => onSelectCity(value)}
-                dataHistory={(city_id, timestamp) =>
-                  saveHistory(city_id, timestamp)
-                }
+                dataSelector={({ center, data }) => {
+                  changePosition(center.lat, center.lng, 7, data);
+                }}
               ></CitySelector>
             </Card>
             <Divider style={{ border: "none" }}></Divider>
             <Card className="info-tabs card-shadow">
-              <Tabs items={items} animated></Tabs>
+              <Tabs items={tabsItems} animated></Tabs>
             </Card>
           </Col>
-          <Col xs={24} sm={24}></Col>
         </Row>
       </Content>
     </>

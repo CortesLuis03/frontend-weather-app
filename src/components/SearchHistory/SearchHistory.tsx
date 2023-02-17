@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Card, Timeline, Typography } from "antd";
+import { Card, Skeleton, Timeline, Typography } from "antd";
 const { Link } = Typography;
 
 const urlHistory = "http://127.0.0.1:8000/api/weather/history";
 
 export function SearchHistory({ dataPosition }) {
   const [historyData, setHistoryData] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     setTimeout(() => {
@@ -59,6 +60,9 @@ export function SearchHistory({ dataPosition }) {
               };
             })
           );
+        })
+        .finally(() => {
+          setLoading(false);
         });
     }, 1500);
   });
@@ -73,7 +77,11 @@ export function SearchHistory({ dataPosition }) {
           boxShadow: "none",
         }}
       >
-        <Timeline items={historyData} mode={"right"} reverse />
+        {!loading && historyData.length != 0 ? (
+          <Timeline items={historyData} mode={"right"} reverse />
+        ) : (
+          <Skeleton active />
+        )}
       </Card>
     </>
   );

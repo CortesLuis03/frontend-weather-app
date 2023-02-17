@@ -1,23 +1,27 @@
-import { Card, Empty, Image, Progress } from "antd";
-import Meta from "antd/es/card/Meta";
 import React, { useEffect, useState } from "react";
+import { defaultData } from "../defaultData";
+import { Card, Empty, Image } from "antd";
+import Meta from "antd/es/card/Meta";
 import CountUp from "react-countup";
 import { Typography } from "antd";
 
 const { Paragraph, Text } = Typography;
 
-export function WeatherInfo({ currentInfo }) {
+export function WeatherInfo({ currentInfo = defaultData }) {
+  const {
+    data: {
+      current: { weather, feels_like, humidity, temp, visibility, wind_speed },
+    },
+  } = currentInfo ? currentInfo : defaultData;
+  const { icon, main, description } = weather[0];
   const [weatherImageSrc, setWeatherImageSrc] = useState("");
 
   useEffect(() => {
-    setWeatherImageSrc(
-      `http://openweathermap.org/img/wn/${currentInfo?.current?.weather[0]?.icon}@2x.png`
-    );
+    setWeatherImageSrc(`http://openweathermap.org/img/wn/${icon}@2x.png`);
   });
   return (
     <>
-      {" "}
-      {currentInfo ? (
+      {main != "NaN" ? (
         <Card
           bordered={false}
           className="card-stadistics"
@@ -28,12 +32,12 @@ export function WeatherInfo({ currentInfo }) {
           <Card.Grid className="ant-card-grid-header">
             <Meta
               avatar={<Image src={weatherImageSrc} preview={false} />}
-              title={currentInfo?.current?.weather[0]?.main}
+              title={main}
               description={
                 <Paragraph type="secondary" style={{ fontSize: 14 }}>
-                  {currentInfo?.current?.weather[0]?.description} | Temperature:
+                  {description} | Temperature:
                   <CountUp
-                    end={currentInfo?.current?.temp}
+                    end={temp}
                     duration={1}
                     suffix={"°"}
                     prefix={" "}
@@ -57,11 +61,7 @@ export function WeatherInfo({ currentInfo }) {
               title={<Text>Humidity</Text>}
               description={
                 <Text>
-                  <CountUp
-                    end={currentInfo?.current?.humidity}
-                    duration={1}
-                    suffix={" %"}
-                  />
+                  <CountUp end={humidity} duration={1} suffix={" %"} />
                 </Text>
               }
             />
@@ -84,7 +84,7 @@ export function WeatherInfo({ currentInfo }) {
               description={
                 <Text>
                   <CountUp
-                    end={currentInfo?.current?.feels_like}
+                    end={feels_like}
                     duration={1}
                     suffix={"°"}
                     decimals={2}
@@ -107,7 +107,7 @@ export function WeatherInfo({ currentInfo }) {
               description={
                 <Text>
                   <CountUp
-                    end={currentInfo?.current?.wind_speed}
+                    end={wind_speed}
                     duration={1}
                     suffix={" km/h"}
                     decimals={2}
@@ -130,7 +130,7 @@ export function WeatherInfo({ currentInfo }) {
               description={
                 <Text>
                   <CountUp
-                    end={currentInfo?.current?.visibility / 1000}
+                    end={visibility / 1000}
                     duration={1}
                     suffix={" km"}
                   />

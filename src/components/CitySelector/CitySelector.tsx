@@ -1,47 +1,32 @@
 import React, { useEffect, useState } from "react";
+import { WEATHER_KEY } from "../../../config/api";
+import { defaultData } from "../defaultData";
 import { Select, Row, Col } from "antd";
+
+import saveHistory from "../../services/apiServices";
 
 const urlCountries = "http://127.0.0.1:8000/api/country/list";
 const urlCities = "http://127.0.0.1:8000/api/city/perCountry/";
 
-export const CitySelector = ({ dataWeather, dataHistory }) => {
+export const CitySelector = ({ dataSelector }) => {
   const [countryList, setCountryList] = useState([]);
   const [cityList, setCityList] = useState([]);
   const [city, setCity] = useState<string>("");
 
-  const cleanData = {
-    lat: 0,
-    lon: 180,
-    current: {
-      temp: 0,
-      feels_like: 0,
-      pressure: 0,
-      humidity: 0,
-      dew_point: 0,
-      uvi: 0,
-      clouds: 0,
-      visibility: 0,
-      wind_speed: 0,
-      wind_deg: 0,
-      weather: [
-        {
-          main: "NaN",
-          description: "NaN",
-          icon: "03d",
-        },
-      ],
-    },
-  };
-
   const onChangeCity = (value: string) => {
     const valueData = value.split("|");
+    const lat = Number(valueData[0]);
+    const lng = Number(valueData[1]);
+    const city_id = Number(valueData[2]);
     fetch(
-      `https://api.openweathermap.org/data/3.0/onecall?lat=${valueData[0]}&lon=${valueData[1]}&units=metric&exclude=hourly,minutely,daily&appid=76c373757ebc6f563ca89ca92d58bcba`
+      `https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${lng}&units=metric&exclude=hourly,minutely,daily&appid=${WEATHER_KEY}`
     )
       .then((res) => res.json())
       .then((data) => {
-        dataWeather(data);
-        dataHistory(valueData[2], data.current.dt);
+        const info = { center: { lat: lat, lng: lng }, data: data };
+        dataSelector(info);
+        saveHistory(city_id, data.current.dt);
+        setCity(valueData[3]);
       });
   };
 
@@ -52,12 +37,12 @@ export const CitySelector = ({ dataWeather, dataHistory }) => {
         setCityList(
           data.map((item: any) => {
             return {
-              value: `${item.lat}|${item.lng}|${item.id}`,
+              value: `${item.lat}|${item.lng}|${item.id}|${item.name}`,
               label: item.name,
             };
           })
         );
-        setCity(value);
+        setCity("Select a City");
       });
   };
 
@@ -81,8 +66,9 @@ export const CitySelector = ({ dataWeather, dataHistory }) => {
           showSearch
           allowClear
           onClear={() => {
-            setCity("");
-            dataWeather(cleanData);
+            setCity("Select a City");
+            console.log(defaultData);
+            dataSelector(defaultData);
           }}
           placeholder="Select a country"
           style={{ width: "100%" }}
@@ -101,6 +87,7 @@ export const CitySelector = ({ dataWeather, dataHistory }) => {
           style={{ width: "100%" }}
           onChange={onChangeCity}
           options={cityList}
+          value={city}
           filterOption={(input, option: any) =>
             (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
           }

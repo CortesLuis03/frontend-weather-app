@@ -1,3 +1,9 @@
+main.ant-layout-content {
+  box-shadow: rgb(0 0 0 / 22%) 0px 10px 24px -15px inset;
+  padding-left: 45px;
+  padding-right: 45px;
+  padding-top: 45px;
+}
 #map {
   height: 705px;
 }
@@ -6,15 +12,21 @@
   /* border: 1px solid rgb(224 224 224) !important; */
   padding: 0px;
   border-radius: 2px;
-  box-shadow: 0px 0px 15px 0px rgba(143,143,143,1);
+  box-shadow: 0px 0px 15px 0px rgba(143, 143, 143, 1);
 }
 
-.card-map .ant-card-body{
+.card-map .ant-card-body {
   padding: 0px !important;
   margin: -1px;
   width: 101%;
 }
-.info-tabs{
+.ant-card.card-map {
+  min-height: 750px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.info-tabs {
   min-height: 630px;
 }
 
@@ -22,11 +34,11 @@
   box-shadow: none !important;
 }
 
-.card-stadistics .ant-card-body{
+.card-stadistics .ant-card-body {
   padding: 1px !important;
 }
 
-.card-history{
+.card-history {
   box-shadow: none !important;
   padding: 10px;
 }
@@ -74,6 +86,6 @@
   filter: opacity(0.9) !important;
 }
 
-ul.ant-timeline{
+ul.ant-timeline {
   max-height: 470px;
 }
