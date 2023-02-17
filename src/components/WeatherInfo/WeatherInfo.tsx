@@ -29,7 +29,7 @@ export function WeatherInfo({ currentInfo = defaultData }) {
             minHeight: 536,
           }}
         >
-          <Card.Grid className="ant-card-grid-header">
+          <Card.Grid className="ant-card-grid-header" hoverable={false}>
             <Meta
               avatar={<Image src={weatherImageSrc} preview={false} />}
               title={main}
@@ -48,7 +48,7 @@ export function WeatherInfo({ currentInfo = defaultData }) {
               style={{ textTransform: "capitalize" }}
             />
           </Card.Grid>
-          <Card.Grid>
+          <Card.Grid hoverable={false}>
             <Meta
               avatar={
                 <Image
@@ -66,7 +66,7 @@ export function WeatherInfo({ currentInfo = defaultData }) {
               }
             />
           </Card.Grid>
-          <Card.Grid>
+          <Card.Grid hoverable={false}>
             <Meta
               avatar={
                 <Image
@@ -93,7 +93,7 @@ export function WeatherInfo({ currentInfo = defaultData }) {
               }
             />
           </Card.Grid>
-          <Card.Grid>
+          <Card.Grid hoverable={false}>
             <Meta
               avatar={
                 <Image
@@ -116,7 +116,7 @@ export function WeatherInfo({ currentInfo = defaultData }) {
               }
             />
           </Card.Grid>
-          <Card.Grid>
+          <Card.Grid hoverable={false}>
             <Meta
               avatar={
                 <Image
