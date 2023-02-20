@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { defaultData } from "../defaultData";
+// import { defaultData } from "../defaultData";
+import { defaultData } from "@/components/defaultData";
 import { Card, Empty, Image } from "antd";
 import Meta from "antd/es/card/Meta";
 import CountUp from "react-countup";
@@ -53,7 +54,7 @@ export function WeatherInfo({ currentInfo = defaultData }) {
               avatar={
                 <Image
                   preview={false}
-                  src={"src/assets/humidity.png"}
+                  src={"./assets/humidity.png"}
                   width={40}
                   style={{ padding: 5 }}
                 />
@@ -71,7 +72,7 @@ export function WeatherInfo({ currentInfo = defaultData }) {
               avatar={
                 <Image
                   preview={false}
-                  src={"src/assets/thermal.png"}
+                  src={"./assets/thermal.png"}
                   width={40}
                   style={{ padding: 5 }}
                 />
@@ -98,7 +99,7 @@ export function WeatherInfo({ currentInfo = defaultData }) {
               avatar={
                 <Image
                   preview={false}
-                  src={"src/assets/wind.png"}
+                  src={"./assets/wind.png"}
                   width={40}
                   style={{ padding: 5 }}
                 />
@@ -121,7 +122,7 @@ export function WeatherInfo({ currentInfo = defaultData }) {
               avatar={
                 <Image
                   preview={false}
-                  src={"src/assets/visibility.png"}
+                  src={"./assets/visibility.png"}
                   width={40}
                   style={{ padding: 5 }}
                 />

@@ -52,6 +52,9 @@ main.ant-layout-content {
 
 .ant-card-grid {
   width: 50% !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .ant-card-grid-header {

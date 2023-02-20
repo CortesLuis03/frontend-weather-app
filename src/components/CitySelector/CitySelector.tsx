@@ -3,7 +3,7 @@ import { WEATHER_KEY } from "../../../config/api";
 import { defaultData } from "../defaultData";
 import { Select, Row, Col } from "antd";
 
-import saveHistory from "../../services/apiServices";
+import saveHistory from "@/services/apiServices";
 
 const urlCountries = "http://127.0.0.1:8000/api/country/list";
 const urlCities = "http://127.0.0.1:8000/api/city/perCountry/";
